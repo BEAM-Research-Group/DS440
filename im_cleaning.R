@@ -31,15 +31,15 @@ read_convert_save = function(type, im_list)
     {
       # get image file
       im_file = paste0(im_hash[[im_name]], '/', im_name) # file.path(c_path, im_name)  # paste0('../data/', type, '/', im_name)  # system.file(paste0(im_dir, type, '/', im_name), package="EBImage") 
-        print(im_file)
+      print(im_file)
       # read image into r environment 
       im = readImage(im_file) 
-        print(im)
-        #print(typeof(im))
+      print(im)
+      #print(typeof(im))
       # convert to jpg and save
       writeImage(x = im, 
-                 file = im_file, 
-                 file_name = paste0('../data/', type, '/', im_name), # file.path('../data', type, im_name)
+                 files = paste0('../data/clean_im/', type, '/', im_name), 
+                 #file_name = paste0('../data/', type, '/', im_name), # file.path('../data', type, im_name)
                  type = 'jpeg')
     }  # end for
   } # end if
