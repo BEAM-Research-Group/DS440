@@ -7,6 +7,7 @@ set.seed(440)
 # NOTES:
 # Should pre-damaged building image be included as input?
 # Yes, could use them to help predict no damage -> just make sure to label them as no damage
+# However currently not included
 
 # Import libraries
 library(magick)
@@ -27,20 +28,23 @@ read_convert_save = function(type, im_list)
   #images = vector(mode = "list", length = im_length)
   if (length(im_list) > 0)  # checks if there are images
   {
+    print(type)
+    c = 0
     for (im_name in im_list)  # go through each image
     {
       # get image file
-      im_file = paste0(im_hash[[im_name]], '/', im_name) # file.path(c_path, im_name)  # paste0('../data/', type, '/', im_name)  # system.file(paste0(im_dir, type, '/', im_name), package="EBImage") 
+      im_file = paste0(im_hash[[im_name]], '/', im_name) 
       print(im_file)
       # read image into r environment 
       im = readImage(im_file) 
-      print(im)
+      #print(im)
       #print(typeof(im))
       # convert to jpg and save
       writeImage(x = im, 
                  files = paste0('../data/clean_im/', type, '/', im_name), 
-                 #file_name = paste0('../data/', type, '/', im_name), # file.path('../data', type, im_name)
                  type = 'jpeg')
+    c = c + 1
+    print(c)
     }  # end for
   } # end if
   else {print('No images provided for input.')}
@@ -48,7 +52,7 @@ read_convert_save = function(type, im_list)
 
 # save directory 
 im_dir = "../data/PRJ-2301/D1. Building Assessments/Photographs/"
-# there are folders names 1 through 233
+# there are folders named 1 through 233
 folder_names = 1:233
 
 # get images
@@ -58,10 +62,10 @@ for (folder in folder_names)
 {
   # get image file names in current folder
   cur_path = paste0(im_dir, folder)  # current path
-  im_PNG = list.files(path = cur_path, pattern = '*.PNG')
+  # im_PNG = list.files(path = cur_path, pattern = '*.PNG')
   im_jpg = list.files(path = cur_path, pattern = '*.jpg')
   im_JPG = list.files(path = cur_path, pattern = '*.JPG')
-  im_names = c(im_PNG, im_jpg, im_JPG)
+  im_names = c(im_jpg, im_JPG) # c(im_PNG, im_jpg, im_JPG)
   for (im in im_names) {
     im_hash[[im]] = cur_path
   }
