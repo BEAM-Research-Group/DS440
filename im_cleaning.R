@@ -39,7 +39,7 @@ read_convert_save = function(type, im_list)
       # get true label
       # checks most common label first to increase speed 
       n = unlist(str_split(im_name, ' ', n=2))[1]  # get image name only
-      im_label = FALSE
+      im_label = 99
       if (n %in% labels_2$"GlobalID") {
         im_label = 2
       } else if (n %in% labels_1$"GlobalID") {
@@ -53,7 +53,7 @@ read_convert_save = function(type, im_list)
       }  # images with NA labels are excluded
       print(n)
       print(im_label)
-      if (im_label)
+      if (im_label != 99)
         {
         # read image into r environment 
         im = readImage(im_file) 
@@ -61,7 +61,7 @@ read_convert_save = function(type, im_list)
         #print(typeof(im))
         # convert to jpg and save
         writeImage(x = im, 
-                   files = paste0('../data/clean_im2/', type, '/', im_label, '/', im_name), 
+                   files = paste0('../data/clean_im3/', type, '/', im_label, '/', im_name), 
                    type = 'jpeg')
         }
     #c = c + 1
