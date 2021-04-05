@@ -14,6 +14,7 @@ library(magick)
 library(EBImage)
 library("readxl")
 library(hash)
+library(stringr)
 
 read_convert_save = function(type, im_list)
 {
@@ -28,23 +29,43 @@ read_convert_save = function(type, im_list)
   #images = vector(mode = "list", length = im_length)
   if (length(im_list) > 0)  # checks if there are images
   {
-    print(type)
-    c = 0
+    print(type) # check the input
+    #c = 0  # count used for debugging
     for (im_name in im_list)  # go through each image
     {
       # get image file
-      im_file = paste0(im_hash[[im_name]], '/', im_name) 
-      print(im_file)
-      # read image into r environment 
-      im = readImage(im_file) 
-      #print(im)
-      #print(typeof(im))
-      # convert to jpg and save
-      writeImage(x = im, 
-                 files = paste0('../data/clean_im/', type, '/', im_name), 
-                 type = 'jpeg')
-    c = c + 1
-    print(c)
+      im_file = paste0(im_hash[[im_name]], '/', im_name)
+      print(im_name)
+      # get true label
+      # checks most common label first to increase speed 
+      n = unlist(str_split(im_name, ' ', n=2))[1]  # get image name only
+      im_label = FALSE
+      if (n %in% labels_2$"GlobalID") {
+        im_label = 2
+      } else if (n %in% labels_1$"GlobalID") {
+        im_label = 1
+      } else if (n %in% labels_3$"GlobalID") {
+        im_label = 3
+      } else if (n %in% labels_4$"GlobalID") {
+        im_label = 4
+      } else if (n %in% labels_0$"GlobalID") {
+        im_label = 0
+      }  # images with NA labels are excluded
+      print(n)
+      print(im_label)
+      if (im_label)
+        {
+        # read image into r environment 
+        im = readImage(im_file) 
+        #print(im)
+        #print(typeof(im))
+        # convert to jpg and save
+        writeImage(x = im, 
+                   files = paste0('../data/clean_im2/', type, '/', im_label, '/', im_name), 
+                   type = 'jpeg')
+        }
+    #c = c + 1
+    #print(c)
     }  # end for
   } # end if
   else {print('No images provided for input.')}
@@ -54,6 +75,18 @@ read_convert_save = function(type, im_list)
 im_dir = "../data/PRJ-2301/D1. Building Assessments/Photographs/"
 # there are folders named 1 through 233
 folder_names = 1:233
+
+# read in xlsx file with image name and their label
+tab_data = read_excel("../data/PRJ-2301/D1. Building Assessments/HMichael_Data.xlsx")
+# check all values of damage state
+#unique(tab_data[,"Damage State"])
+# get list of image names with damage state = 4
+labels_4 = tab_data[tab_data$"Damage State"==4,]
+labels_3 = tab_data[tab_data$"Damage State"==3,]
+labels_2 = tab_data[tab_data$"Damage State"==2,]
+labels_1 = tab_data[tab_data$"Damage State"==1,]
+labels_0 = tab_data[tab_data$"Damage State"==0,]
+# exclude NAs
 
 # get images
 # go through each folder
