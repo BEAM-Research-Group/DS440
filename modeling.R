@@ -134,30 +134,6 @@ model %>% compile(
   metrics = "accuracy"
 )
 
-# fit
-hist = model %>% fit_generator(
-  # training data
-  train_image_array_gen,
-  
-  # epochs
-  steps_per_epoch = as.integer(train_samples / batch_size), 
-  epochs = epochs, 
-  
-  # validation data
-  validation_data = valid_image_array_gen,
-  validation_steps = as.integer(valid_samples / batch_size),
-  
-  # print progress
-  verbose = 2,
-  callbacks = list(
-    # save best model after every epoch
-    callback_model_checkpoint("/Users/shiringlander/Documents/Github/DL_AI/Tutti_Frutti/fruits-360/keras/fruits_checkpoints.h5", save_best_only = TRUE),
-    # only needed for visualising with TensorBoard
-    callback_tensorboard(log_dir = "/Users/shiringlander/Documents/Github/DL_AI/Tutti_Frutti/fruits-360/keras/logs")
-  )
-)
-
-
 # check model structure (layer summary)
 summary(model)
 
