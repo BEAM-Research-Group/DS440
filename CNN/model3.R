@@ -1,7 +1,8 @@
 ##################### MODIFICATIONS ############################################
 # - Increased epochs to 30
 #     - allows accuracy improvement now there's more layers and smaller decay
-# - decreased the rate at which the learning rate decays 
+#     - 30 runs into an error with plotting, so added code to save history on training before plotting
+# - increased the rate at which the learning rate decays and increased initial learning rate
 
 ##################### CLEAN ENVIRONMENT ########################################
 #.rs.restartR()  # to restart R session (primarily for debugging purposes)
@@ -168,7 +169,7 @@ summary(model)
 ##################### COMPILE THE MODEL ######################################## 
 model %>% compile(
   loss = "categorical_crossentropy",
-  optimizer = optimizer_rmsprop(lr = 0.0001, decay = 1e-2/epochs),
+  optimizer = optimizer_rmsprop(lr = 0.01, decay = 1e-2/epochs),
   metrics = "accuracy"
 )
 
@@ -184,14 +185,21 @@ hist = model %>% fit_generator(
   
   # validation data
   validation_data = valid_image_array_gen,
-  validation_steps = as.integer(valid_samples / batch_size)# ,
+  validation_steps = as.integer(valid_samples / batch_size),
   
   # print progress
-  #verbose = 2
+  verbose = 2,
+  callbacks = list(
+    # save best model after every epoch
+    callback_model_checkpoint("logs/checkpoints1_model5.h5", save_best_only = TRUE),
+    # only needed for visualizing with TensorBoard
+    callback_tensorboard(log_dir = "logs")
+  )
 )
+# save results as R object in case plotting crashes session
+saveRDS(hist, file = 'model3_history.rds')
 
 ##################### VISUALIZATION ############################################ 
-
 # visualize the history of fitting
 plot(hist)
 
