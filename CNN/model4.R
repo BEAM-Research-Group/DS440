@@ -1,5 +1,5 @@
 ##################### MODIFICATIONS ############################################
-# Changed optimizer to use exponential decay
+# Changed optimizer to be adam
 
 ##################### CLEAN ENVIRONMENT ########################################
 #.rs.restartR()  # to restart R session (primarily for debugging purposes)
