@@ -185,10 +185,16 @@ hist = model %>% fit_generator(
   
   # validation data
   validation_data = valid_image_array_gen,
-  validation_steps = as.integer(valid_samples / batch_size)# ,
+  validation_steps = as.integer(valid_samples / batch_size),
   
   # print progress
-  #verbose = 2
+  verbose = 2,
+  callbacks = list(
+    # save best model after every epoch
+    callback_model_checkpoint("logs/checkpoints1.h5", save_best_only = TRUE),
+    # only needed for visualizing with TensorBoard
+    callback_tensorboard(log_dir = "logs")
+  )
 )
 
 ##################### VISUALIZATION ############################################ 
